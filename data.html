@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data - PADIS</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <i class="fas fa-seedling"></i>
+                <h2>PADIS</h2>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="index.html">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a href="calculate.html">Calculate</a>
+                </li>
+                <li class="nav-item active">
+                    <a href="data.html">Data</a>
+                </li>
+                <li class="nav-item">
+                    <a href="about.html">About</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="app-container">
+        <div class="form-section">
+            <h1><i class="fas fa-chart-bar"></i> Data Visualization & Analysis</h1>
+            <p class="subtitle">Compare hazards, return periods, and climate criteria using interactive charts</p>
+
+            <!-- Filter Controls -->
+            <div class="card">
+                <h2 class="section-title"><i class="fas fa-filter"></i> Filter Controls</h2>
+                <div class="filter-container">
+                    <div class="filter-section">
+                        <h3>Hazard Type:</h3>
+                        <div class="checkbox-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="hazard" value="flood" checked>
+                                <span class="checkmark"></span>
+                                Flood
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="hazard" value="drought" checked>
+                                <span class="checkmark"></span>
+                                Drought
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="hazard" value="multi" checked>
+                                <span class="checkmark"></span>
+                                Multi-hazard
+                            </label>
+                        </div>
+                    </div>
+                    <div class="filter-section">
+                        <h3>Return Period:</h3>
+                        <div class="checkbox-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="returnPeriod" value="25" checked>
+                                <span class="checkmark"></span>
+                                25-year
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="returnPeriod" value="50" checked>
+                                <span class="checkmark"></span>
+                                50-year
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="returnPeriod" value="100" checked>
+                                <span class="checkmark"></span>
+                                100-year
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="returnPeriod" value="250" checked>
+                                <span class="checkmark"></span>
+                                250-year
+                            </label>
+                        </div>
+                    </div>
+                    <div class="filter-section">
+                        <h3>Risk Criteria:</h3>
+                        <div class="checkbox-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="riskCriteria" value="climate" checked>
+                                <span class="checkmark"></span>
+                                Climate Factors
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="riskCriteria" value="non-climate" checked>
+                                <span class="checkmark"></span>
+                                Non-climate Factors
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="filter-actions">
+                    <button id="selectAllBtn" class="btn-secondary">Select All</button>
+                    <button id="clearAllBtn" class="btn-secondary">Clear All</button>
+                    <button id="applyBtn" class="btn-primary">Apply</button>
+                    <button id="exportBtn" class="btn-secondary">Export Data</button>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Chart Area -->
+        <div class="chart-area">
+            <div class="card">
+                <h2 class="section-title"><i class="fas fa-chart-bar"></i> Interactive Bar Chart</h2>
+                <div class="chart-container">
+                    <canvas id="barChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>Copyright © 2026 PADIS. All rights reserved.</p>
+    </footer>
+
+    <!-- Custom JS -->
+    <script src="js/main.js"></script>
+    <script src="js/data.js"></script>
+</body>
+</html>

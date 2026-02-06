@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculate - PADIS</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <i class="fas fa-seedling"></i>
+                <h2>PADIS</h2>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="index.html">Home</a>
+                </li>
+                <li class="nav-item active">
+                    <a href="calculate.html">Calculate</a>
+                </li>
+                <li class="nav-item">
+                    <a href="data.html">Data</a>
+                </li>
+                <li class="nav-item">
+                    <a href="about.html">About</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="app-container">
+        <div class="form-section">
+            <h1><i class="fas fa-calculator"></i> Economic Loss Assessment Tool</h1>
+            <p class="subtitle">Quantitative analysis of disaster impacts across Indonesia</p>
+
+            <div class="step-indicator">
+                <div class="step active" id="step1">Select Location</div>
+                <div class="step" id="step2">Select Disaster & Scenario</div>
+                <div class="step" id="step3">Select Return Period</div>
+                <div class="step" id="step4">View Results</div>
+            </div>
+
+            <form id="lossForm">
+                <!-- Location Section -->
+                <div class="card">
+                    <h2 class="section-title"><i class="fas fa-map-marker-alt"></i> Location Selection</h2>
+                    <div class="form-group">
+                        <label for="locationSelect">Select Regency/City:</label>
+                        <div class="input-group">
+                            <i class="fas fa-city"></i>
+                            <select id="locationSelect" required>
+                                <option value="">Select Regency/City</option>
+                                <!-- Options will be populated by JavaScript -->
+                            </select>
+                        </div>
+                        <p class="helper-text">Choose the regency or city for disaster impact assessment</p>
+                    </div>
+                </div>
+
+                <!-- Hazard Section -->
+                <div class="card">
+                    <h2 class="section-title"><i class="fas fa-exclamation-triangle"></i> Hazard Parameters</h2>
+                    <div class="form-group">
+                        <label for="disasterType">Disaster Type:</label>
+                        <div class="input-group">
+                            <i class="fas fa-water"></i>
+                            <select id="disasterType" required>
+                                <option value="">Select Disaster Type</option>
+                                <option value="flood">Flood</option>
+                                <option value="drought">Drought</option>
+                                <option value="multi">Multi-hazard (Flood + Drought)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="returnPeriod">Return Period (years):</label>
+                        <div class="input-group">
+                            <i class="fas fa-calendar-alt"></i>
+                            <select id="returnPeriod" required>
+                                <option value="">Select Return Period</option>
+                                <option value="25">25</option>
+                                <option value="50">50</option>
+                                <option value="100">100</option>
+                                <option value="250">250</option>
+                            </select>
+                        </div>
+                        <p class="helper-text">Higher return periods indicate rarer but more severe events</p>
+                    </div>
+                    <div class="form-group">
+                        <label for="riskCriteria">Risk Criteria:</label>
+                        <div class="input-group">
+                            <i class="fas fa-leaf"></i>
+                            <select id="riskCriteria" required>
+                                <option value="">Select Risk Criteria</option>
+                                <option value="climate">Climate Factors</option>
+                                <option value="non-climate">Non-climate Factors</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Exposure Section -->
+                <div class="card">
+                    <h2 class="section-title"><i class="fas fa-users"></i> Exposure Parameters</h2>
+                    <div class="form-group">
+                        <label for="latitude">Latitude:</label>
+                        <div class="input-group">
+                            <i class="fas fa-globe"></i>
+                            <input type="number" id="latitude" step="0.000001" readonly>
+                        </div>
+                        <p class="helper-text">Click on the map to select affected area</p>
+                    </div>
+                    <div class="form-group">
+                        <label for="longitude">Longitude:</label>
+                        <div class="input-group">
+                            <i class="fas fa-globe"></i>
+                            <input type="number" id="longitude" step="0.000001" readonly>
+                        </div>
+                        <p class="helper-text">Click on the map to select affected area</p>
+                    </div>
+                    <div class="form-group">
+                        <label for="population">Population Exposed:</label>
+                        <div class="input-group">
+                            <i class="fas fa-user-friends"></i>
+                            <input type="number" id="population" min="0" required>
+                        </div>
+                        <p class="helper-text">Automatically estimated from regency/city selection or map click</p>
+                    </div>
+                    <div class="form-group">
+                        <label for="area">Area Affected (hectares):</label>
+                        <div class="input-group">
+                            <i class="fas fa-expand"></i>
+                            <input type="text" id="area" inputmode="numeric" required>
+                        </div>
+                        <p class="helper-text">Automatically estimated from regency/city selection or map click</p>
+                        <div class="error-message" id="area-error"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="riceProductivity">Rice Productivity (tons/hectare):</label>
+                        <div class="input-group">
+                            <i class="fas fa-seedling"></i>
+                            <input type="number" id="riceProductivity" min="0" step="0.01" required>
+                        </div>
+                        <p class="helper-text">Rice productivity in tons per hectare</p>
+                    </div>
+                    <div class="form-group">
+                        <label for="dryRicePrice">Dry Rice Price (IDR/ton):</label>
+                        <div class="input-group">
+                            <i class="fas fa-money-bill-wave"></i>
+                            <input type="number" id="dryRicePrice" min="0" required>
+                        </div>
+                        <p class="helper-text">Price of dry rice per ton in IDR</p>
+                    </div>
+                    <div class="form-group">
+                        <label for="assetValue">Asset Value (IDR) - Calculated:</label>
+                        <div class="input-group">
+                            <i class="fas fa-calculator"></i>
+                            <input type="text" id="assetValue" readonly>
+                        </div>
+                        <p class="helper-text">Automatically calculated as Rice Productivity × Dry Rice Price</p>
+                    </div>
+                </div>
+
+                <!-- Weighting Section -->
+                <div class="card">
+                    <h2 class="section-title"><i class="fas fa-balance-scale"></i> Risk Weighting</h2>
+                    <div class="form-group">
+                        <label for="climateWeight">Climate Factor Weight (0-1):</label>
+                        <div class="input-group">
+                            <i class="fas fa-sliders-h"></i>
+                            <input type="number" id="climateWeight" min="0" max="1" step="0.1" value="0.5" required>
+                        </div>
+                        <p class="helper-text">Weight for climate-related risk factors</p>
+                    </div>
+                    <div class="form-group">
+                        <label for="nonClimateWeight">Non-climate Factor Weight (0-1):</label>
+                        <div class="input-group">
+                            <i class="fas fa-sliders-h"></i>
+                            <input type="number" id="nonClimateWeight" min="0" max="1" step="0.1" value="0.5" required>
+                        </div>
+                        <p class="helper-text">Weight for non-climate related risk factors</p>
+                    </div>
+                    <div class="button-group">
+                        <button type="submit"><i class="fas fa-calculator"></i> Calculate Economic Loss</button>
+                    </div>
+                </div>
+            </form>
+
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>Performing economic loss assessment...</p>
+            </div>
+
+            <div class="results" id="results">
+                <div class="total-loss-card">
+                    <i class="fas fa-chart-line"></i>
+                    <h3>Total Economic Loss</h3>
+                    <p class="total-loss-amount" id="totalLoss"></p>
+                </div>
+
+                <div class="card">
+                    <h2 class="section-title"><i class="fas fa-chart-bar"></i> Loss Breakdown by Sector</h2>
+                    <div class="sector-chart">
+                        <div class="sector-bar">
+                            <div class="bar-container">
+                                <div class="bar-fill" id="housingBar"></div>
+                            </div>
+                            <div class="bar-label">Housing</div>
+                            <p class="bar-value" id="housingLoss"></p>
+                        </div>
+                        <div class="sector-bar">
+                            <div class="bar-container">
+                                <div class="bar-fill infrastructure" id="infrastructureBar"></div>
+                            </div>
+                            <div class="bar-label">Infrastructure</div>
+                            <p class="bar-value" id="infrastructureLoss"></p>
+                        </div>
+                        <div class="sector-bar">
+                            <div class="bar-container">
+                                <div class="bar-fill agriculture" id="agricultureBar"></div>
+                            </div>
+                            <div class="bar-label">Agriculture</div>
+                            <p class="bar-value" id="agricultureLoss"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="map-wrapper">
+            <h3 class="map-title">Select Affected Area</h3>
+            <div class="map-container">
+                <div id="map"></div>
+                <div class="legend">
+                    <h4>Hazard Visualization</h4>
+                    <div class="legend-item">
+                        <div class="legend-color flood-accent"></div>
+                        <span>Flood Zone</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color drought-accent"></div>
+                        <span>Drought Zone</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color multi-accent"></div>
+                        <span>Multi-hazard Zone</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>Copyright © 2026 PADIS. All rights reserved.</p>
+    </footer>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <!-- Leaflet Draw Plugin -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.css" />
+    <script src="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.js"></script>
+    <!-- Custom JS -->
+    <script src="js/main.js"></script>
+</body>
+</html>
